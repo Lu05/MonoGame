@@ -1205,6 +1205,8 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             switch (primitiveType)
             {
+                case PrimitiveType.PointList:
+                    return PrimitiveTopology.PointList;
                 case PrimitiveType.LineList:
                     return PrimitiveTopology.LineList;
                 case PrimitiveType.LineStrip:
