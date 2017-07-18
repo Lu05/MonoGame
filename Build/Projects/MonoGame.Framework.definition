@@ -831,6 +831,7 @@
     <Compile Include="Graphics\SurfaceFormat.cs" />
     <Compile Include="Graphics\SwapChainRenderTarget.cs">
       <Platforms>Windows</Platforms>
+      <Platforms>Windows, WindowsUniversal</Platforms>
     </Compile>
     <Compile Include="Graphics\Texture2D.cs" />
     <Compile Include="Graphics\Texture2D.DirectX.cs">

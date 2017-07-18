@@ -10,7 +10,7 @@ namespace Microsoft.Xna.Framework.Graphics
     {
         internal SharpDX.Direct3D11.Resource _texture;
 
-        private SharpDX.Direct3D11.ShaderResourceView _resourceView;
+        internal SharpDX.Direct3D11.ShaderResourceView _resourceView;
 
         /// <summary>
         /// Gets the handle to a shared resource.
