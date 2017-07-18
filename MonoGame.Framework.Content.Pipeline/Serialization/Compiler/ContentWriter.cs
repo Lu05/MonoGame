@@ -344,10 +344,19 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler
             if (typeWriter == null)
                 throw new ArgumentNullException("typeWriter");
 
+            // When T is a value type use the specified typeWriter.
+            // (The typeWriter is of the correct type in this case.)
             if (typeWriter.TargetType.IsValueType)
                 typeWriter.Write(this, value);
             else
+            {
+                // When T is a reference type, call WriteObject<T>(T) to figure out the
+                // correct content type writer.
+                // (typeWriter may not be of the correct type here. For example, when a
+                // List<object> is written, the typeWriter is ReflectiveWriter<object>,
+                // which does not write anything!)
                 WriteObject(value);
+            }
         }
 
         /// <summary>
