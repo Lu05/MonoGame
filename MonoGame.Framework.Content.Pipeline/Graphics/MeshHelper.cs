@@ -262,10 +262,10 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             for (var i = 0; i < numVerts; i++)
             {
                 var n = normals[i];
-                Debug.Assert(n.IsFinite(), "Bad normal!");
-                Debug.Assert(n.Length() >= 0.9999f, "Bad normal!");
+				Debug.Assert(n.IsFinite(), "Bad normal! Normal vector must be finite.");
+				Debug.Assert(n.Length() >= 0.9999f, "Bad normal! Normal vector must be normalized. (Actual length = " + n.Length() + ")");
 
-                var t = tan1[i];
+				var t = tan1[i];
                 if (t.LengthSquared() < float.Epsilon)
                 {
                     // TODO: Ideally we could spit out a warning to the
@@ -544,7 +544,23 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
             if (transform == Matrix.Identity)
                 return;
 
-            var inverseTransform = Matrix.Invert(transform);
+			// This method applies the specified transform to the contents of all nodes in this
+			// subtree. The result needs to be the same as when the transform is applied to the
+			// local transform of a node.
+			// => The local transforms of the nodes (and animations) need to be updated!
+			// 
+			// c ... The contents of a node. (Represents a vertex position or a child node.)
+			// T ... The transform matrix to apply. (Parameter 'transform')
+			// M ... The old local transform of a node.
+			// M' ... The new local transform of a node.
+			// (Notation: row vectors, matrices multiplied left-to-right)
+			// 
+			// "T applied to contents" = "T applied to local transform"
+			//              c * T * M' = c * M * T
+			//                  T * M' = M * T
+			//
+
+			var inverseTransform = Matrix.Invert(transform);
 
             var work = new Stack<NodeContent>();
             work.Push(scene);
