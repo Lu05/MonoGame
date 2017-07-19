@@ -691,9 +691,9 @@ namespace Microsoft.Xna.Framework.Graphics
                     using (var defaultDevice = new SharpDX.Direct3D11.Device(driverType, creationFlags, featureLevels.ToArray()))
                         _d3dDevice = defaultDevice.QueryInterface<SharpDX.Direct3D11.Device>();
                 }
+                else
+                    throw;
             }
-            else
-                throw;
 
             // Get Direct3D 11.1 context
             _d3dContext = _d3dDevice.ImmediateContext.QueryInterface<SharpDX.Direct3D11.DeviceContext>();
