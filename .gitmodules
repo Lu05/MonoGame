@@ -7,3 +7,7 @@
 [submodule "ThirdParty/NVorbis"]
 	path = ThirdParty/NVorbis
 url=https://github.com/MrHelmut/NVorbis.git
+[submodule "Source/MonoGame"]
+	path = Source/MonoGame
+	url = https://github.com/stonstad/MonoGame-DigitalRune.git
+	branch = master
