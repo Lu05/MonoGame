@@ -830,7 +830,7 @@
     <Compile Include="Graphics\States\TextureFilterMode.cs" />
     <Compile Include="Graphics\SurfaceFormat.cs" />
     <Compile Include="Graphics\SwapChainRenderTarget.cs">
-      <Platforms>Windows, WindowsUniversal</Platforms>
+      <Platforms>Windows,WindowsUniversal</Platforms>
     </Compile>
     <Compile Include="Graphics\Texture2D.cs" />
     <Compile Include="Graphics\Texture2D.DirectX.cs">
