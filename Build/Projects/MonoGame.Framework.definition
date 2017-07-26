@@ -831,7 +831,7 @@
     <Compile Include="Graphics\States\TextureFilterMode.cs" />
     <Compile Include="Graphics\SurfaceFormat.cs" />
     <Compile Include="Graphics\SwapChainRenderTarget.cs">
-      <Platforms>Windows</Platforms>
+      <Platforms>Windows,WindowsUniversal</Platforms>
     </Compile>
     <Compile Include="Graphics\Texture2D.cs" />
     <Compile Include="Graphics\Texture2D.DirectX.cs">
@@ -1015,8 +1015,9 @@
     <Compile Include="Input\Keyboard.WinRT.cs">
       <Platforms>Windows8,WindowsPhone81,WindowsUniversal</Platforms>
     </Compile>
-    <Compile Include="Input\KeyboardInput.cs">
-      <Platforms>Android,iOS,Windows8,WindowsPhone81,WindowsUniversal</Platforms>
+    <Compile Include="Input\KeyboardInput.cs"/>
+    <Compile Include="Input\KeyboardInput.Null.cs">
+      <Platforms>Angle,Linux,MacOS,Windows,WindowsGL</Platforms>
     </Compile>
     <Compile Include="Input\KeyboardInput.Android.cs">
       <Platforms>Android</Platforms>
@@ -1030,8 +1031,9 @@
     <Compile Include="Input\KeyboardState.cs" />
     <Compile Include="Input\Keys.cs" />
     <Compile Include="Input\KeyState.cs" />
-    <Compile Include="Input\MessageBox.cs">
-      <Platforms>Android,iOS,Windows8,WindowsPhone81,WindowsUniversal</Platforms>
+    <Compile Include="Input\MessageBox.cs"/>
+    <Compile Include="Input\MessageBox.Null.cs">
+      <Platforms>Angle,Linux,MacOS,Windows,WindowsGL</Platforms>
     </Compile>
     <Compile Include="Input\MessageBox.Android.cs">
       <Platforms>Android</Platforms>

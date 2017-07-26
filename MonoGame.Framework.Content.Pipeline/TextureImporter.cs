@@ -92,8 +92,8 @@ namespace Microsoft.Xna.Framework.Content.Pipeline
             // The bits per pixel and image type may have changed
             uint bpp = FreeImage.GetBPP(fBitmap);
             imageType = FreeImage.GetImageType(fBitmap);
-            var pitch = (int) FreeImage.GetPitch(fBitmap);
-            var redMask = FreeImage.GetRedMask(fBitmap);
+			var pitch = (int)(width * (bpp / 8));
+			var redMask = FreeImage.GetRedMask(fBitmap);
             var greenMask = FreeImage.GetGreenMask(fBitmap);
             var blueMask = FreeImage.GetBlueMask(fBitmap);
 
@@ -115,7 +115,20 @@ namespace Microsoft.Xna.Framework.Content.Pipeline
                 case FREE_IMAGE_TYPE.FIT_RGBAF:
                     face = new PixelBitmapContent<Vector4>(width, height);
                     break;
-            }
+				case FREE_IMAGE_TYPE.FIT_UINT16:
+					// XNA does not have an R16 format. --> Duplicate R channel and use Rg32.
+					var bytesRg32 = new byte[bytes.Length * 2];
+					for (int i = 0; i < bytes.Length; i += 2)
+					{
+						bytesRg32[i * 2 + 0] = bytes[i];
+						bytesRg32[i * 2 + 1] = bytes[i + 1];
+						bytesRg32[i * 2 + 2] = bytes[i];
+						bytesRg32[i * 2 + 3] = bytes[i + 1];
+					}
+					bytes = bytesRg32;
+					face = new PixelBitmapContent<Rg32>(width, height);
+					break;
+			}
             FreeImage.UnloadEx(ref fBitmap);
 
             face.SetPixelData(bytes);
@@ -152,8 +165,9 @@ namespace Microsoft.Xna.Framework.Content.Pipeline
 
                 case FREE_IMAGE_TYPE.FIT_RGBAF:
                 case FREE_IMAGE_TYPE.FIT_RGBA16:
-                    //Don't switch channels in this case or colors will be shown wrong
-                    break;
+				case FREE_IMAGE_TYPE.FIT_UINT16:
+					//Don't switch channels in this case or colors will be shown wrong
+					break;
 
                 default:
                     // Bitmap and other formats are converted to 32-bit by default

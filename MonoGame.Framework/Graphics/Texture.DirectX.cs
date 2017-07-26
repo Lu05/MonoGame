@@ -10,7 +10,7 @@ namespace Microsoft.Xna.Framework.Graphics
     {
         internal SharpDX.Direct3D11.Resource _texture;
 
-        private SharpDX.Direct3D11.ShaderResourceView _resourceView;
+        internal SharpDX.Direct3D11.ShaderResourceView _resourceView;
 
         /// <summary>
         /// Gets the handle to a shared resource.
@@ -23,6 +23,15 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             using (var resource = _texture.QueryInterface<SharpDX.DXGI.Resource>())
                 return resource.SharedHandle;
+        }
+
+        /// <summary>
+        /// Returns a handle to internal resource object. Valid only on DirectX platforms.
+        /// For usage, convert this to SharpDX.Direct3D11.Resource.
+        /// </summary>
+        public object Handle
+        {
+            get { return _texture; }
         }
 
         internal abstract SharpDX.Direct3D11.Resource CreateTexture();

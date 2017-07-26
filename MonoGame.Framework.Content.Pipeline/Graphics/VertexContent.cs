@@ -214,7 +214,7 @@ namespace Microsoft.Xna.Framework.Content.Pipeline.Graphics
         public void RemoveRange(int index, int count)
         {
             for (var i = index; i < index + count; i++)
-                RemoveAt(i);
+                RemoveAt(index);
         }
     }
 }

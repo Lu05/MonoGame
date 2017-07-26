@@ -296,11 +296,16 @@ namespace Microsoft.Xna.Framework.Graphics
             }
             catch(SharpDXException)
             {
-                // Try again without the debug flag.  This allows debug builds to run
-                // on machines that don't have the debug runtime installed.
-                creationFlags &= ~SharpDX.Direct3D11.DeviceCreationFlags.Debug;
-                using (var defaultDevice = new SharpDX.Direct3D11.Device(driverType, creationFlags, featureLevels.ToArray()))
-                    _d3dDevice = defaultDevice.QueryInterface<SharpDX.Direct3D11.Device1>();
+                if ((creationFlags & SharpDX.Direct3D11.DeviceCreationFlags.Debug) != 0)
+                {
+                    // Try again without the debug flag.  This allows debug builds to run
+                    // on machines that don't have the debug runtime installed.
+                    creationFlags &= ~SharpDX.Direct3D11.DeviceCreationFlags.Debug;
+                    using (var defaultDevice = new SharpDX.Direct3D11.Device(driverType, creationFlags, featureLevels.ToArray()))
+                        _d3dDevice = defaultDevice.QueryInterface<SharpDX.Direct3D11.Device1>();
+                }
+                else
+                    throw;
             }
 
             // Get Direct3D 11.1 context
@@ -668,11 +673,16 @@ namespace Microsoft.Xna.Framework.Graphics
             }
             catch (SharpDXException)
             {
-                // Try again without the debug flag.  This allows debug builds to run
-                // on machines that don't have the debug runtime installed.
-                creationFlags &= ~SharpDX.Direct3D11.DeviceCreationFlags.Debug;
-                using (var defaultDevice = new SharpDX.Direct3D11.Device(driverType, creationFlags, featureLevels.ToArray()))
-                    _d3dDevice = defaultDevice.QueryInterface<SharpDX.Direct3D11.Device>();
+                if ((creationFlags & SharpDX.Direct3D11.DeviceCreationFlags.Debug) != 0)
+                {
+                    // Try again without the debug flag.  This allows debug builds to run
+                    // on machines that don't have the debug runtime installed.
+                    creationFlags &= ~SharpDX.Direct3D11.DeviceCreationFlags.Debug;
+                    using (var defaultDevice = new SharpDX.Direct3D11.Device(driverType, creationFlags, featureLevels.ToArray()))
+                        _d3dDevice = defaultDevice.QueryInterface<SharpDX.Direct3D11.Device>();
+                }
+                else
+                    throw;
             }
 
             // Get Direct3D 11.1 context
@@ -1181,6 +1191,8 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             switch (primitiveType)
             {
+                case PrimitiveType.PointList:
+                    return PrimitiveTopology.PointList;
                 case PrimitiveType.LineList:
                     return PrimitiveTopology.LineList;
                 case PrimitiveType.LineStrip:

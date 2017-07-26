@@ -28,5 +28,9 @@ namespace Microsoft.Xna.Framework.Graphics
         /// Renders the vertices as a single polyline; the count may be any positive integer.
         /// </summary>
 		LineStrip,
-	}
+        /// <summary>
+        /// Renders the vertices as a sequence of points; the count may be any positive integer.
+        /// </summary>
+        PointList
+    }
 }

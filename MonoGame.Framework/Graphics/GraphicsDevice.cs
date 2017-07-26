@@ -1297,6 +1297,8 @@ namespace Microsoft.Xna.Framework.Graphics
         {
             switch (primitiveType)
             {
+                case PrimitiveType.PointList:
+                    return primitiveCount;
                 case PrimitiveType.LineList:
                     return primitiveCount * 2;
                 case PrimitiveType.LineStrip:

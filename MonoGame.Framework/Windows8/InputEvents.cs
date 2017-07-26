@@ -118,7 +118,7 @@ namespace Microsoft.Xna.Framework
         private void UIElement_PointerWheelChanged(object sender, PointerRoutedEventArgs args)
         {
             var pointerPoint = args.GetCurrentPoint(null);
-            UpdateMouse(pointerPoint);
+            UpdateMouse(pointerPoint, GetPosition(pointerPoint));
             args.Handled = true;
         }
 
@@ -146,7 +146,7 @@ namespace Microsoft.Xna.Framework
 
         private void CoreWindow_PointerWheelChanged(object sender, PointerEventArgs args)
         {
-            UpdateMouse(args.CurrentPoint);
+            UpdateMouse(args.CurrentPoint, GetPosition(args.CurrentPoint));
             args.Handled = true;
         }
 
@@ -154,7 +154,7 @@ namespace Microsoft.Xna.Framework
 
         private void PointerPressed(PointerPoint pointerPoint, UIElement target, Pointer pointer)
         {
-            var pos = new Vector2((float)pointerPoint.Position.X, (float)pointerPoint.Position.Y) * _currentDipFactor;
+            var pos = GetPosition(pointerPoint);
 
             var isTouch = pointerPoint.PointerDevice.PointerDeviceType == PointerDeviceType.Touch;
 
@@ -163,7 +163,7 @@ namespace Microsoft.Xna.Framework
             if (!isTouch)
             {
                 // Mouse or stylus event.
-                UpdateMouse(pointerPoint);
+                UpdateMouse(pointerPoint, pos);
 
                 // Capture future pointer events until a release.		
                 if (target != null)
@@ -173,7 +173,7 @@ namespace Microsoft.Xna.Framework
 
         private void PointerMoved(PointerPoint pointerPoint)
         {
-            var pos = new Vector2((float)pointerPoint.Position.X, (float)pointerPoint.Position.Y) * _currentDipFactor;
+            var pos = GetPosition(pointerPoint);
 
             var isTouch = pointerPoint.PointerDevice.PointerDeviceType == PointerDeviceType.Touch;
             var touchIsDown = pointerPoint.IsInContact;
@@ -186,13 +186,13 @@ namespace Microsoft.Xna.Framework
             if (!isTouch)
             {
                 // Mouse or stylus event.
-                UpdateMouse(pointerPoint);
+                UpdateMouse(pointerPoint, pos);
             }
         }
 
         private void PointerReleased(PointerPoint pointerPoint, UIElement target, Pointer pointer)
         {
-            var pos = new Vector2((float)pointerPoint.Position.X, (float)pointerPoint.Position.Y) * _currentDipFactor;
+            var pos = GetPosition(pointerPoint);
 
             var isTouch = pointerPoint.PointerDevice.PointerDeviceType == PointerDeviceType.Touch;
 
@@ -201,7 +201,7 @@ namespace Microsoft.Xna.Framework
             if (!isTouch)
             {
                 // Mouse or stylus event.
-                UpdateMouse(pointerPoint);
+                UpdateMouse(pointerPoint, pos);
 
                 // Release the captured pointer.
                 if (target != null)
@@ -209,10 +209,10 @@ namespace Microsoft.Xna.Framework
             }
         }
 
-        private static void UpdateMouse(PointerPoint point)
+        private static void UpdateMouse(PointerPoint point, Vector2 position)
         {
-            var x = (int)(point.Position.X * _currentDipFactor);
-            var y = (int)(point.Position.Y * _currentDipFactor);
+            var x = (int)position.X;
+            var y = (int)position.Y;
 
             var state = point.Properties;
 
@@ -233,6 +233,25 @@ namespace Microsoft.Xna.Framework
                 state.IsXButton2Pressed ? ButtonState.Pressed : ButtonState.Released,
                 Mouse.PrimaryWindow.MouseState.HorizontalScrollWheelValue + horizontalScrollDelta);
         }
+
+        // Converts the position from device independent pixels to pixels relative to the 
+        // graphics device back buffer.
+        private Vector2 GetPosition(PointerPoint pointerPoint)
+        {
+            // To scale from window resolution to graphics device back buffer resolution.
+            var graphicsDeviceManager = Game.Instance.graphicsDeviceManager;
+#if WINDOWS_UAP
+            var clientBounds = UAPGameWindow.Instance.ClientBounds;
+#else
+            var clientBounds = MetroGameWindow.Instance.ClientBounds;
+#endif
+            var backBufferScaleX = graphicsDeviceManager.PreferredBackBufferWidth / (float)clientBounds.Width;
+            var backBufferScaleY = graphicsDeviceManager.PreferredBackBufferHeight / (float)clientBounds.Height;
+            return new Vector2(
+                (float)(pointerPoint.Position.X) * _currentDipFactor * backBufferScaleX,
+                (float)(pointerPoint.Position.Y) * _currentDipFactor * backBufferScaleY);
+        }
+
 
         public void UpdateState()
         {
