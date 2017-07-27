@@ -11,7 +11,9 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using SharpDX.WIC;
+using Bitmap = System.Drawing.Bitmap;
 using MapFlags = SharpDX.Direct3D11.MapFlags;
+using PixelFormat = SharpDX.WIC.PixelFormat;
 using Resource = SharpDX.Direct3D11.Resource;
 
 #if WINDOWS_PHONE
@@ -24,6 +26,11 @@ using System.Windows.Media.Imaging;
 using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 using System.Threading.Tasks;
+#endif
+
+#if WINDOWS
+using System.Drawing;
+using System.Drawing.Imaging;
 #endif
 
 namespace Microsoft.Xna.Framework.Graphics
@@ -258,6 +265,9 @@ namespace Microsoft.Xna.Framework.Graphics
 
         private void PlatformSaveAsJpeg(Stream stream, int width, int height)
         {
+#if WINDOWS
+            SaveAsImage(stream, width, height, ImageFormat.Jpeg);
+#endif
 #if WINDOWS_STOREAPP || WINDOWS_UAP
             SaveAsImage(Windows.Graphics.Imaging.BitmapEncoder.JpegEncoderId, stream, width, height);
 #endif
@@ -304,6 +314,65 @@ namespace Microsoft.Xna.Framework.Graphics
                 }
             }
         }
+
+#if WINDOWS
+        private void SaveAsImage(Stream stream, int width, int height, ImageFormat format)
+        {
+            if (stream == null)
+            {
+                throw new ArgumentNullException("stream", "'stream' cannot be null (Nothing in Visual Basic)");
+            }
+            if (width <= 0)
+            {
+                throw new ArgumentOutOfRangeException("width", width, "'width' cannot be less than or equal to zero");
+            }
+            if (height <= 0)
+            {
+                throw new ArgumentOutOfRangeException("height", height, "'height' cannot be less than or equal to zero");
+            }
+            if (format == null)
+            {
+                throw new ArgumentNullException("format", "'format' cannot be null (Nothing in Visual Basic)");
+            }
+
+            byte[] data = null;
+            GCHandle? handle = null;
+            Bitmap bitmap = null;
+            try
+            {
+                data = new byte[width * height * 4];
+                handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+                GetData(data);
+
+                // internal structure is BGR while bitmap expects RGB
+                for (int i = 0; i < data.Length; i += 4)
+                {
+                    byte temp = data[i + 0];
+                    data[i + 0] = data[i + 2];
+                    data[i + 2] = temp;
+                }
+
+                bitmap = new Bitmap(width, height, width * 4, System.Drawing.Imaging.PixelFormat.Format32bppArgb, handle.Value.AddrOfPinnedObject());
+
+                bitmap.Save(stream, format);
+            }
+            finally
+            {
+                if (bitmap != null)
+                {
+                    bitmap.Dispose();
+                }
+                if (handle.HasValue)
+                {
+                    handle.Value.Free();
+                }
+                if (data != null)
+                {
+                    data = null;
+                }
+            }
+        }
+#endif
 
         private void PlatformSaveAsPng(Stream stream, int width, int height)
         {
