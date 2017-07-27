@@ -290,7 +290,7 @@ namespace Microsoft.Xna.Framework.Graphics
 
             waitEvent.Wait();
 #endif
-#if !WINDOWS_STOREAPP && !WINDOWS_PHONE && !WINDOWS_UAP
+#if !WINDOWS && !WINDOWS_STOREAPP && !WINDOWS_PHONE && !WINDOWS_UAP
             throw new NotImplementedException();
 #endif
         }
