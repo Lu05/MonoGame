@@ -20,9 +20,6 @@ using SharpDX.DXGI;
 using SharpDX.Mathematics.Interop;
 #endif
 
-#if WINDOWS
-using SharpDX.DXGI;
-#endif
 
 namespace Microsoft.Xna.Framework.Graphics
 {
