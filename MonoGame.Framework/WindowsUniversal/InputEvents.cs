@@ -304,8 +304,7 @@ namespace Microsoft.Xna.Framework
             Keyboard.Clear();
 
             // required of input can stop working if we change focus
-            Window.Current.CoreWindow.IsInputEnabled = true;
-            CoreWindow.GetForCurrentThread().IsInputEnabled = true;
+            WakeupKeyboardInput();
         }
 
         private void CoreWindow_Activated(CoreWindow sender, WindowActivatedEventArgs args)
@@ -316,8 +315,7 @@ namespace Microsoft.Xna.Framework
                 Keyboard.Clear();
 
             // required of input can stop working if we change focus
-            Window.Current.CoreWindow.IsInputEnabled = true;
-            CoreWindow.GetForCurrentThread().IsInputEnabled = true;
+            WakeupKeyboardInput();
         }
 
         private void CoreWindow_VisibilityChanged(CoreWindow sender, VisibilityChangedEventArgs args)
@@ -328,7 +326,13 @@ namespace Microsoft.Xna.Framework
                 Keyboard.Clear();
 
             // required of input can stop working if we change focus
-            Window.Current.CoreWindow.IsInputEnabled = true;
+            WakeupKeyboardInput();
+        }
+
+        private static void WakeupKeyboardInput()
+        {
+            if (Window.Current != null)
+                Window.Current.CoreWindow.IsInputEnabled = true;
             CoreWindow.GetForCurrentThread().IsInputEnabled = true;
         }
     }
