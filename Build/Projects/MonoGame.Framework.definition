@@ -1217,12 +1217,6 @@
     <Compile Include="Utilities\Imaging\PinnedArray.cs">
         <Platforms>WindowsGL,Linux,MacOS</Platforms>
     </Compile>
-    <Compile Include="Utilities\Imaging\TinyJpeg.cs">
-        <Platforms>WindowsGL,Linux,MacOS</Platforms>
-    </Compile>
-    <Compile Include="Utilities\Imaging\TinyJpeg.Generated.cs">
-        <Platforms>WindowsGL,Linux,MacOS</Platforms>
-    </Compile>
 	
 
 
