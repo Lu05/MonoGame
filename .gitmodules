@@ -3,7 +3,7 @@
 	url = https://github.com/OutOfOrder/MonoKickstart.git
 [submodule "ThirdParty/Dependencies"]
 	path = ThirdParty/Dependencies
-	url = https://github.com/Lu05/MonoGame.Dependencies.git
+	url = https://github.com/MonoGame/MonoGame.Dependencies
 [submodule "ThirdParty/NVorbis"]
 	path = ThirdParty/NVorbis
 url=https://github.com/MrHelmut/NVorbis.git
