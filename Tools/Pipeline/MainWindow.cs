@@ -28,7 +28,8 @@ namespace MonoGame.Tools.Pipeline
         private string[] monoLocations = {
             "/usr/bin/mono",
             "/usr/local/bin/mono",
-            "/Library/Frameworks/Mono.framework/Versions/Current/bin/mono"
+            "/Library/Frameworks/Mono.framework/Versions/Current/bin/mono",
+            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "mono"),
         };
 
         int setw = 0;
@@ -79,11 +80,6 @@ namespace MonoGame.Tools.Pipeline
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = !PipelineController.Instance.Exit();
-
-#if WINDOWS || LINUX
-            if (!e.Cancel)
-                Xwt.Application.Exit();
-#endif
 
             base.OnClosing(e);
         }
@@ -323,13 +319,16 @@ namespace MonoGame.Tools.Pipeline
                 foreach (var path in monoLocations)
                 {
                     if (File.Exists(path))
+                    {
                         monoLoc = path;
+                        break;
+                    }
                 }
 
                 if (string.IsNullOrEmpty(monoLoc))
                 {
                     monoLoc = "mono";
-                    OutputAppend("Cound not find mono. Please install the latest version from http://www.mono-project.com");
+                    OutputAppend("Could not find mono. Please install the latest version from http://www.mono-project.com");
                 }
 
                 proc.StartInfo.FileName = monoLoc;
