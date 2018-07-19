@@ -569,6 +569,8 @@ namespace Microsoft.Xna.Framework.Content.Pipeline
                     pivot.ScalingPivotInverse = transform;
                 else if (aiNode.Name.EndsWith("_GeometricTranslation"))
                     pivot.GeometricTranslation = transform;
+                else if (aiNode.Name.EndsWith("_GeometricTranslationInverse"))
+                    pivot.GeometricTranslation = Matrix.Invert(transform);
                 else if (aiNode.Name.EndsWith("_GeometricRotation"))
                     pivot.GeometricRotation = transform;
                 else if (aiNode.Name.EndsWith("_GeometricScaling"))

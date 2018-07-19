@@ -411,7 +411,9 @@ namespace MonoGame.OpenGL
         // ATITC
         AtcRgbaExplicitAlphaAmd = 0x8C93,
         AtcRgbaInterpolatedAlphaAmd = 0x87EE,
-        // DXT
+        // ETC1
+        Etc1 = 0x8D64,
+        Srgb = 0x8C40,
 
     }
 
@@ -433,6 +435,7 @@ namespace MonoGame.OpenGL
         UnsignedShort5551 = 0x8034,
         Float = 0x1406,
         HalfFloat = 0x140B,
+        HalfFloatOES = 0x8D61,
         Byte = 0x1400,
         UnsignedShort = 0x1403,
         UnsignedInt1010102 = 0x8036,
@@ -1169,8 +1172,10 @@ namespace MonoGame.OpenGL
         internal delegate void VertexAttribDivisorDelegate (int location, int frequency);
         internal static VertexAttribDivisorDelegate VertexAttribDivisor;
 
+#if DEBUG
         [UnmanagedFunctionPointer (CallingConvention.StdCall)]
         delegate void DebugMessageCallbackProc (int source, int type, int id, int severity, int length, IntPtr message, IntPtr userParam);
+        static DebugMessageCallbackProc DebugProc;
         [System.Security.SuppressUnmanagedCodeSecurity ()]
         [MonoNativeFunctionWrapper]
         delegate void DebugMessageCallbackDelegate (DebugMessageCallbackProc callback, IntPtr userParam);
@@ -1179,7 +1184,6 @@ namespace MonoGame.OpenGL
         internal delegate void ErrorDelegate (string message);
         internal static event ErrorDelegate OnError;
 
-#if DEBUG
         static void DebugMessageCallbackHandler(int source, int type, int id, int severity, int length, IntPtr message, IntPtr userParam)
         {
             var errorMessage = Marshal.PtrToStringAnsi(message);
@@ -1338,7 +1342,8 @@ namespace MonoGame.OpenGL
                 DebugMessageCallback = LoadEntryPoint<DebugMessageCallbackDelegate>("glDebugMessageCallback");
                 if (DebugMessageCallback != null)
                 {
-                    DebugMessageCallback(DebugMessageCallbackHandler, IntPtr.Zero);
+                    DebugProc = DebugMessageCallbackHandler;
+                    DebugMessageCallback(DebugProc, IntPtr.Zero);
                     Enable(EnableCap.DebugOutput);
                     Enable(EnableCap.DebugOutputSynchronous);
                 }
